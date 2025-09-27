@@ -14,7 +14,7 @@
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
-  #nix.settings.substituters = lib.mkForce [ "https://nixos-cache-proxy.cofob.dev" ];
+  nix.settings.substituters = lib.mkForce [ "https://nixos-cache-proxy.cofob.dev" ];
   # Use latest kernel.
   boot.kernelPackages = pkgs.linuxPackages_latest;
 
@@ -27,12 +27,13 @@
   hardware.graphics = {
     enable = true;
   };
+  services.xserver.videoDrivers = ["nvidia"];
   hardware.nvidia = {
     modesetting.enable=true;
     nvidiaSettings = true;
     package = config.boot.kernelPackages.nvidiaPackages.stable;
+    open = false;
   };
-
   # Enable networking
   networking.networkmanager.enable = true;
 

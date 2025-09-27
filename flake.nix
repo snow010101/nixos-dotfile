@@ -1,5 +1,5 @@
 {
-  description = "Снежный NixOS";
+  description = "Снежный NixOS"; # Например, "My NixOS Configuration"
 
   inputs = {
     zen-browser = {
@@ -8,27 +8,32 @@
     # to have it up-to-date or simply don't specify the nixpkgs input
     inputs.nixpkgs.follows = "nixpkgs";
   };
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.05";
+    # Укажите здесь желаемый канал nixpkgs.
+    # Замените "nixos-23.11" на вашу версию из system.stateVersion в configuration.nix
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
   };
 
   outputs = { self, nixpkgs, ... }@inputs: {
-    # "nixos" на хостнейм вашей машины, узнать можно через команду hostname
+    # Замените "my-nixos" на hostname вашей машины
     nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
-      system = "x86_64-linux"; 
+      system = "x86_64-linux"; # Для ARM-систем укажите "aarch64-linux"
       modules = [
         ({ config, pkgs, ... }: {
           programs.steam.enable = true;
           programs.fish.enable = true;
           environment.systemPackages = with pkgs; [
             neovim
+            inputs.zen-browser.packages."${system}".default
             fastfetch
             htop
             vim
+            gimp
             git
             wget
+            localsend
           ];
         })
-        ./configuration.nix 
+        ./configuration.nix # Импортируем существующий файл конфигурации
         ./hardware-configuration.nix
       ];
     };
